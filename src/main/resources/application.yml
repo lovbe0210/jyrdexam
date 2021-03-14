@@ -1,0 +1,69 @@
+server:
+  port: 9527 # 服务端口
+spring:
+  profiles:
+    active: dev # 环境设置
+  # 设置日志级别
+  logging:
+    level:
+      root: DEBUG
+
+
+  datasource: # mysql数据库连接
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://47.108.169.157:3306/exam?serverTimezone=GMT%2B8
+    username: root
+    password: root
+
+    # 初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时
+    initial-size: 10
+    # 最大连接池连接数量，最大活跃连接数
+    max-active: 150
+    # 最小连接池连接数量，最小空闲数量
+    min-idle: 10
+    # 配置获取连接等待超时的时间
+    max-wait: 5000
+    # 是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+    pool-prepared-statements: false
+
+  redis:
+    host: 47.108.169.157
+    port: 6379
+    database: 0
+    password:  #默认为空
+    lettuce:
+      pool:
+        max-active: 20  #最大连接数，负值表示没有限制，默认8
+        max-wait: -1    #最大阻塞等待时间，负值表示没限制，默认-1
+        max-idle: 8     #最大空闲连接，默认8
+        min-idle: 0     #最小空闲连接，默认0
+
+  servlet:  # 文件上传大小限制
+      multipart:
+        max-file-size: 10MB
+        max-request-size: 50MB
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false #开发的时候禁用缓存
+    mode: LEGACYHTML5
+
+mybatis-plus:
+  mapper-locations: classpath*:com/jyrd/exam/base/mapper/xml/*.xml
+
+
+
+aliyun:  # 阿里云短信相关参数
+  sms:
+    host: https://intlsms.market.alicloudapi.com
+    path: /comms/sms/groupmessaging
+    method: POST
+    appcode: de245388e0fd41209d21b61e7108d8b6
+    templateID: 20201107114133
+    timeOut: 5 #短信有效时间：分钟
+
+
+fastDFS:  # fdfs主机
+  host: http://47.108.169.157

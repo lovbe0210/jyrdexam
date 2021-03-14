@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>在线考试系统首页</title>
+    <div th:include="~{common/commonSource::#source}"></div>
+</head>
+<body>
+<nav class="navbar navbar-fixed-top exam-header" role="navigation">
+    <div class="container">
+        <div>
+            <a class="bi bi-book-half" href="/question/toList" role="button">试题管理</a>
+            <a class="bi bi-book-half" href="/paper/toList" role="button">试卷管理</a>
+            <a class="bi bi-book-half" href="#" role="button">成绩查询</a>
+            <a class="bi bi-book-half" href="/exam/toList" role="button">考试管理</a>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <div  th:text="欢迎：+ ${userName}"></div>
+                        <!--<b class="caret"></b>-->
+                    </a>
+                    <ul class="dropdown-menu login">
+                        <li>
+                            <span class="hand"></span>
+                            <a href="login/toHome">进入后台</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="loginOut">退出</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="exam-header-plus"></div>
+<div class="container">
+    <!-- 考试相关的搜索框 -->
+    <div id="myExamQuery" class="row" style="padding-bottom: 25px;">
+        <div class="col-md-3">
+            <input id="myExamName" type="text" name="myExamName" class="form-control query" placeholder="请输入考试名称进行搜索" >
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary" style="height: 40px;width: 150px;max-width: 100%;" onclick="loadMyExamList(1, 20)">
+                <i class="glyphicon glyphicon-search"></i> 搜索
+            </button>
+        </div>
+    </div>
+    <div id="ExamList" class="row">
+    </div>
+    <div class="row">
+        <ul id="ExamPaginator"></ul>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    //定义变量
+    var $ExamQuery = $("#myExamQuery");
+    var $ExamList = $("#myExamList");
+
+    //页面加载完毕，执行如下方法：
+    $(function() {
+        loadMyExamList(1, 20);
+    });
+
+    //加载已发布考试列表，然后统计分析
+    function loadMyExamList(page, rows){
+        $.ajax({
+            url : "exam/list",
+            data : {
+                page : page,
+                rows : rows,
+                two : $("#ExamName").val()
+            },
+            success : function(obj){
+                if (obj.rows == 0) {
+                    $ExamList.html("");
+                    $ExamQuery.hide();
+                    return;
+                }
+
+                $ExamQuery.show();
+
+                var html = [];
+                for (var i in obj.rows) {
+                    html.push('<div class="col-md-4">');
+                    html.push('	<div class="exam">');
+                    html.push('		<h3>' + obj.rows[i].NAME + '</h3>');
+                    html.push('		<p><span class="time">' + obj.rows[i].START_TIME_STR + '</span></p>');
+                    html.push('		<div>');
+                    html.push('			<button>');
+                    if (obj.rows[i].EXAM_HAND == "AWAIT") {
+                        html.push('				<i class="normal"><small></small></i>');
+                        html.push('				<span>未开始</span>');
+                    } else if (obj.rows[i].EXAM_HAND == "START") {
+                        html.push('				<i class="normal"><small></small></i>');
+                        html.push('				<span>进行中</span>');
+                    } else if (obj.rows[i].EXAM_HAND == "END") {
+                        html.push('				<i class="warn"><small></small></i>');
+                        html.push('				<span>已结束</span>');
+                    }
+                    html.push('			</button>');
+                    html.push('		</div>');
+                    html.push('		<div class="handle">');
+                    html.push('			<a onclick="alert(\'开发中\')">');
+                    html.push('				<i class="glyphicon glyphicon-user"></i>');
+                    html.push('				<span><small></small>'+obj.rows[i].TOTAL_SCORE+' / '+obj.rows[i].PAPER_TOTLE_SCORE+'</span>');
+                    html.push('			</a>');
+                    html.push('			<a onclick="alert(\'开发中\')">');
+                    html.push('				<i class="glyphicon glyphicon-list"></i>');
+                    html.push('				<span><small></small>往期成绩</span>');
+                    html.push('			</a>');
+                    html.push('			<a onclick="alert(\'开发中\')">');
+                    html.push('				<i class="glyphicon glyphicon-comment"></i>');
+                    html.push('				<span><small></small>考试详情</span>');
+                    html.push('			</a>');
+                    if (obj.rows[i].EXAM_HAND == "AWAIT") {
+                        html.push('			<a>');
+                        html.push('				<i class="glyphicon glyphicon-play"></i>');
+                        html.push('				<span><small></small>未开始</span>');
+                        html.push('			</a>');
+                    } else if (obj.rows[i].EXAM_HAND == "START") {
+                        html.push('			<a onclick="toMyPaper(' + obj.rows[i].ID + ')">');
+                        html.push('				<i class="glyphicon glyphicon-play"></i>');
+                        html.push('				<span><small></small>开始考试</span>');
+                        html.push('			</a>');
+                    } else if (obj.rows[i].EXAM_HAND == "END") {
+                        html.push('			<a>');
+                        html.push('				<i class="glyphicon glyphicon-play"></i>');
+                        html.push('				<span><small></small>已结束</span>');
+                        html.push('			</a>');
+                    }
+                    html.push('		</div>');
+                    html.push('	</div>');
+                    html.push('</div>');
+                }
+
+                $myExamList.html(html.join(""));
+
+                var totalPages = parseInt((obj.total - 1) / rows) + 1;
+                if (totalPages == 1) {
+                    return;
+                }
+
+                $("#myExamPaginator").bootstrapPaginator({
+                    bootstrapMajorVersion : 3,
+                    currentPage : page,
+                    totalPages : totalPages,
+                    onPageChanged : function(e, oldPage, newPage) {
+                        loadMyExamList(newPage, rows);
+                    }
+                });
+            }
+        });
+    }
+
+
+    //到达我的试卷页面
+    function toMyPaper(examId) {
+        window.location.href = "home/myExam/toPaper?examId=" + examId;
+    }
+
+    //到达判卷列表
+    function toMarkList(examId) {
+        window.location.href = "home/myMark/toList?examId=" + examId;
+    }
+</script>
+</html>

@@ -1,0 +1,34 @@
+<div id="head">
+    <nav class="navbar navbar-fixed-top exam-header" role="navigation">
+        <div class="container">
+            <div>
+                <ul class="nav navbar-nav">
+
+                    <a class="bi bi-book-half" href="/question/toList" role="button">试题管理</a>
+                    <a class="bi bi-book-half" href="/paper/toList" role="button">试卷管理</a>
+                    <a class="bi bi-book-half" href="#" role="button">成绩查询</a>
+                    <a class="bi bi-book-half" href="/exam/toList" role="button">考试管理</a>
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <div  th:text="'欢迎:' + ${userName}"></div>
+                            <!--<b class="caret"></b>-->
+                        </a>
+                        <ul class="dropdown-menu login">
+                            <li>
+                                <span class="hand"></span>
+                                <a href="login/toHome">系统配置</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="/loginOut">退出</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>

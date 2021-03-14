@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jyrd.exam.base.mapper.ExamUserQuestionMapper">
+    <resultMap id="examQuestionList" type="com.jyrd.exam.base.vo.ExamUserQuestionVo">
+        <id column="ID" property="id"/>
+        <result column="EXAM_USER_ID" property="examUserId"/>
+        <result column="EXAM_ID" property="examId"/>
+        <result column="USER_ID" property="userId"/>
+        <result column="QUESTION_ID" property="questionId"/>
+        <result column="QUESTION_TYPE" property="questionType"/>
+        <result column="ANSWER" property="answer"/>
+        <result column="TITLE" property="title"/>
+        <result column="OPTION_A" property="optionA"/>
+        <result column="OPTION_B" property="optionB"/>
+        <result column="OPTION_C" property="optionC"/>
+        <result column="OPTION_D" property="optionD"/>
+        <result column="OPTION_E" property="optionE"/>
+        <result column="OPTION_F" property="optionF"/>
+        <result column="OPTION_G" property="optionG"/>
+        <result column="ANALYSIS" property="analysis"/>
+    </resultMap>
+    <select id="getExamQuestionList" resultType="com.jyrd.exam.base.vo.ExamUserQuestionVo" parameterType="java.lang.Integer">
+        SELECT
+        euq.ID,euq.EXAM_USER_ID,euq.EXAM_ID, euq.USER_ID,euq.QUESTION_ID,euq.QUESTION_TYPE,
+        eq.ANSWER,eq.TITLE,eq.OPTION_A,eq.OPTION_B,eq.OPTION_C,eq.OPTION_D,eq.OPTION_E,eq.OPTION_F,eq.OPTION_G,eq.ANALYSIS
+        FROM exm_exam_user_question euq
+        INNER JOIN exm_question eq
+        ON euq.QUESTION_ID = eq.ID
+        WHERE euq.EXAM_USER_ID = #{id}
+        ORDER BY euq.QUESTION_TYPE ASC
+    </select>
+    <select id="getOne" resultType="com.jyrd.exam.base.entity.ExamUserQuestion" parameterType="java.lang.Integer">
+        select * from exm_exam_user_question where id = #{id}
+    </select>
+</mapper>

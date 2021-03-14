@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title th:if="${paperId}">试卷修改</title>
+    <title th:if="${paperId == null}">试卷添加</title>
+    <div th:include="~{common/commonSource::#source}"></div>
+    <link href="/css/paper.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:include="~{common/head::#head}"></div>
+
+<div class="container">
+    <br><br><br>
+    <div class="row">
+        <div class="col-md-11">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form id="editForm" class="form-horizontal" role="form">
+                        <input type="hidden" id="id" name="id" th:value="${paperId}" />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="catalog" class="col-md-4 control-label">试卷分类：</label>
+                                    <div class="col-md-8">
+                                        <select id="catalog" name="catalogId" class="form-control" onchange="initType();">
+                                            <option th:each="catalog:${catalogList}" th:value="${catalog.id}">[[${catalog.catalogName}]]</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="name" class="col-md-4 control-label">试卷名称：</label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="name" name="name" th:value="${paperName }"
+                                               class="form-control" placeholder="请输入名称">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="description" class="col-md-2 control-label">描述：</label>
+                                    <div class="col-md-10">
+                                        <textarea id="description" th:text="${paperDescription}" name="description"></textarea>
+                                        <small class="help-block"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="text-align: center;">
+                                <button type="button" class="btn btn-primary" onclick="javascript:history.back(-1);">
+                                    <span class="glyphicon glyphicon-arrow-left"></span>
+                                    &nbsp;返回
+                                </button>
+                                <span th:if="${paperId == null}">
+                                    <button type="button" class="btn btn-primary" onclick="doAdd()">
+                                        <span class="glyphicon glyphicon-ok"></span>
+                                        &nbsp;添加
+                                    </button>
+                                </span>
+                                <span th:if="${paperId != null }">
+                                    <button type="button" class="btn btn-primary" onclick="doEdit()">
+                                        <span class="glyphicon glyphicon-ok"></span>
+                                        &nbsp;修改
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    //定义变量
+    var $paperTypeId = $("#paperTypeId");
+    var $paperTypeName = $("#paperTypeName");
+    var $editForm = $("#editForm");
+    var $description = $("#description");
+    var $id = $("#id");
+
+    var $minKOption = {
+        uploadJson : "home/paper/doTempUpload",
+        filePostName : "files",
+        width : "100%",
+        minHeight : 100,
+        items : ['justifyleft', 'justifycenter', 'justifyright', 'formatblock', 'fontname', 'fontsize',
+            '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat',
+            '|', 'preview', 'fullscreen', 'code',
+            '|', 'image', 'flash', 'table', 'anchor', 'link', 'unlink'
+        ],
+        afterBlur : function(){this.sync();}
+    }
+
+    //页面加载完毕，执行如下方法：
+    $(function() {
+        initValid();
+        initEditor();
+    });
+
+    //初始化编辑器
+    function initEditor(){
+        KindEditor.create("#description", $minKOption);
+    }
+
+    //初始化校验
+    function initValid(){
+        $editForm.bootstrapValidator({
+            excluded : [":disabled"],
+            fields : {
+                name : {
+                    validators : {
+                        notEmpty : {}
+                    }
+                }, paperTypeName : {
+                    trigger : "change",
+                    validators : {
+                        notEmpty : {}
+                    }
+                }
+            }
+        });
+    }
+
+    //校验
+    function valid(){
+        var bv = $editForm.data('bootstrapValidator');
+        bv.validate();
+        return bv.isValid();
+    }
+
+    //完成试卷添加
+    function doAdd(){
+        if(!valid()){
+            return;
+        }
+
+        $.ajax({
+            url : "/paper/doAdd",
+            data : $editForm.serialize(),
+            success : function(obj) {
+                if (!obj.succ) {
+                    BootstrapDialog.show({
+                        title : "提示消息",
+                        message : obj.msg,
+                        buttons : [{
+                            label : "&nbsp;确定",
+                            icon : "glyphicon glyphicon-ok",
+                            cssClass : "btn-primary",
+                            action : function(dialogItself) {
+                                dialogItself.close();
+                            }
+                        }]
+                    });
+                    return;
+                }
+
+                window.location.href = "/paper/toList";
+            }
+        });
+    }
+
+    //完成试卷修改
+    function doEdit(){
+        if(!valid()){
+            return;
+        }
+
+        $.ajax({
+            url : "home/paper/doEdit",
+            data : $editForm.serialize(),
+            success : function(obj) {
+                if (!obj.succ) {
+                    BootstrapDialog.show({
+                        title : "提示消息",
+                        message : obj.msg,
+                        buttons : [{
+                            label : "&nbsp;确定",
+                            icon : "glyphicon glyphicon-ok",
+                            cssClass : "btn-primary",
+                            action : function(dialogItself) {
+                                dialogItself.close();
+                            }
+                        }]
+                    });
+                    return;
+                }
+
+                window.location.href = "home/paper/toList";
+            }
+        });
+    }
+</script>
+</html>

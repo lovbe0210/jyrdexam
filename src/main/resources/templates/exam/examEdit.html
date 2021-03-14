@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title th:if="${exam.id}">考试修改</title>
+    <title th:if="${exam.id == null}">考试添加</title>
+    <div th:include="~{common/commonSource::#source}"></div>
+    <link href="/css/exam.css" rel="stylesheet">
+</head>
+<body>
+<div th:include="~{common/head::#head}"></div>
+<div class="container">
+    <br><br><br>
+    <div class="row">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-11">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form id="editForm" class="form-horizontal" role="form">
+                        <input type="hidden" id="id" name="id" th:value="${examId}" />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="examCatalogId" class="col-md-4 control-label">考试分类：</label>
+                                    <div class="col-md-8">
+                                        <select id="examCatalogId" name="CatalogId" class="form-control">
+                                            <option th:each="catalog:${catalogList}"
+                                                    th:value="${catalog.id}">
+                                                [[${catalog.catalogName}]]
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="name" class="col-md-4 control-label">名称：</label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="name" name="name" th:value="${exam.name}"
+                                               class="form-control" placeholder="请输入名称">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="paperName" class="col-md-4 control-label">试卷：</label>
+                                    <div class="col-md-8">
+                                        <input type="hidden" id="paperId" name="paperId" th:value="${exam.paperId }">
+                                        <input type="text" id="paperName" name="paperName" th:value="${paperName }"
+                                               class="form-control" placeholder="请选择试卷" onclick="toPaperAdd()" readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="passScore" class="col-md-4 control-label">及格分数：</label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="passScore" name="passScore" th:value="${exam.passScore }"
+                                               class="form-control" placeholder="请输入及格分数">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="startTime" class="col-md-4 control-label">开始时间：</label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="startTime" name="startTime" th:value="${exam.startTime}"
+                                               class="form-control" placeholder="请输入开始时间" readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="endTime" class="col-md-4 control-label">结束时间：</label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="endTime" name="endTime" th:value="${exam.endTime}"
+                                               class="form-control" placeholder="请输入结束时间" readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="examDuration" class="col-md-4 control-label">考试时长：</label>
+                              <div class="col-md-8">
+                                <input type="text" id="examDuration" name="examDuration" th:value="${exam.examDuration }"
+                                       class="form-control" placeholder="单位：分钟">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="maxExamCount" class="col-md-4 control-label">考试次数：</label>
+                              <div class="col-md-8">
+                                <input type="text" id="maxExamCount" name="maxExamCount" th:value="${exam.maxExamCount}"
+                                       class="form-control" placeholder="请输入最大考试次数">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <table>
+                                        <tr>
+                                            <td width="88px"></td>
+                                            <td>
+                                                <label class="control-label">考试班组：</label>
+                                            </td>
+                                            <div th:each="dept,status:${deptList}">
+                                                <td th:if="${status.count <= 6}">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            &emsp;&emsp;<input type="checkbox" name="examClass" th:value="${dept.Id}">[[${dept.deptName}]]
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                            </div>
+                                        </tr>
+                                        <tr th:if="${deptList.size() > 6 }">
+                                            <td width="58px"></td>
+                                            <td>
+                                                <label class="control-label">&emsp;&emsp;&emsp;&emsp;&emsp;</label>
+                                            </td>
+                                            <div th:each="dept,status:${deptList}">
+                                                <td th:if="${status.count > 6 && status.count <= 12}">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            &emsp;&emsp;<input type="checkbox" name="examClass" th:value="${dept.Id}">[[${dept.deptName}]]
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                            </div>
+                                        </tr>
+                                        <tr th:if="${deptList.size() > 12}">
+                                            <td width="58px"></td>
+                                            <td>
+                                                <label class="control-label">&emsp;&emsp;&emsp;&emsp;&emsp;</label>
+                                            </td>
+                                            <div th:each="dept,status:${deptList}">
+                                                <td th:if="${status.count > 12}">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            &emsp;&emsp;<input type="checkbox" name="examClass" th:value="${dept.Id}">[[${dept.deptName}]]
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                            </div>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="description" class="col-md-2 control-label">描述：</label>
+                                    <div class="col-md-10">
+                                        <textarea id="description" name="description" th:utext="${exam.description}"></textarea>
+                                        <small class="help-block"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="text-align: center;">
+                                <button type="button" class="btn btn-primary" onclick="javascript:history.back(-1);">
+                                    <span class="glyphicon glyphicon-arrow-left"></span>
+                                    &nbsp;返回
+                                </button>
+                                <button th:if="${exam.id == null}" type="button" class="btn btn-primary" onclick="doAdd()">
+                                    <span class="glyphicon glyphicon-ok"></span>
+                                    &nbsp;添加
+                                </button>
+                                <button th:if="${exam.id}" type="button" class="btn btn-primary" onclick="doEdit()">
+                                    <span class="glyphicon glyphicon-ok"></span>
+                                    &nbsp;修改
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    //定义变量
+    var $examTypeTree = $("#examTypeTree");
+    var $examTypeId = $("#examTypeId");
+    var $examTypeName = $("#examTypeName");
+    var $editForm = $("#editForm");
+    var $paperId = $("#paperId");
+    var $paperName = $("#paperName");
+
+    var $minKOption = {
+        uploadJson : "home/exam/doTempUpload",
+        filePostName : "files",
+        width : "100%",
+        minHeight : 50,
+        items : ['justifyleft', 'justifycenter', 'justifyright', 'formatblock', 'fontname', 'fontsize',
+            '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat',
+            '|', 'preview', 'fullscreen', 'code',
+            '|', 'image', 'flash', 'table', 'anchor', 'link', 'unlink'
+        ],
+        afterBlur : function(){this.sync();}
+    }
+
+    //页面加载完毕，执行如下方法：
+    $(function() {
+        initTime();
+        initValid();
+        initEditor();
+    });
+
+    //初始化时间控件
+    function initTime(){
+        $("#startTime").datetimepicker({
+            language : "zh-CN",
+            todayHighlight : true,
+            todayBtn : true,
+            autoclose : true,
+            todayHighlight : true,
+            format : "yyyy-mm-dd hh:ii:ss"
+        });
+        $("#endTime").datetimepicker({
+            language : "zh-CN",
+            todayHighlight : true,
+            todayBtn : true,
+            autoclose : true,
+            todayHighlight : true,
+            format : "yyyy-mm-dd hh:ii:ss"
+        });
+    }
+
+    //初始化编辑器
+    function initEditor(){
+        KindEditor.create("#description", $minKOption);
+    }
+
+    //初始化校验
+    function initValid(){
+        $editForm.bootstrapValidator({
+            excluded : [":disabled"],
+            fields : {
+                name : {
+                    validators : {
+                        notEmpty : {}
+                    }
+                }, examCatalogId : {
+                    trigger : "change",
+                    validators : {
+                        notEmpty : {}
+                    }
+                }, paperName : {
+                    trigger : "change",
+                    validators : {
+                        notEmpty : {}
+                    }
+                }, passScore : {
+                    validators : {
+                        notEmpty : {
+
+                        }, regexp : {
+                            regexp : /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/,
+                            message : "必须为正数，最多保留两位小数"
+                        }
+                    }
+                }, startTime : {
+                    trigger : "change",
+                    validators : {
+                        notEmpty : {}
+                    }
+                }, endTime : {
+                    trigger : "change",
+                    validators : {
+                        notEmpty : {}
+                    }
+                }, examDuration : {
+                    validators : {
+                      notEmpty : {
+                      }, regexp : {
+                        regexp : /^(([1-9][0-9]*))$/,
+                        message : "必须为正整数"
+                      }
+                    }
+                }, maxExamCount : {
+                    validators : {
+                      notEmpty : {
+                      }, regexp : {
+                        regexp : /^(([1-9][0-9]*))$/,
+                        message : "必须为正整数"
+                      }
+                    }
+                }, examClass : {
+                      trigger : "change",
+                      validators : {
+                          notEmpty : {
+                              enable: true,
+                              message: "至少选择一个考试部门"
+                          }
+                      }
+                }
+            }
+        });
+    }
+
+    //校验
+    function valid(){
+        var bv = $editForm.data('bootstrapValidator');
+        bv.validate();
+
+        return bv.isValid();
+    }
+
+    //完成考试添加
+    function doAdd(){
+        if(!valid()){
+            return;
+        }
+
+        $.ajax({
+            url : "/exam/doAdd",
+            data : $editForm.serialize(),
+            success : function(obj) {
+                if (!obj.succ) {
+                    BootstrapDialog.show({
+                        title : "提示消息",
+                        message : obj.msg,
+                        buttons : [{
+                            label : "&nbsp;确定",
+                            icon : "glyphicon glyphicon-ok",
+                            cssClass : "btn-primary",
+                            action : function(dialogItself) {
+                                dialogItself.close();
+                            }
+                        }]
+                    });
+                    return;
+                }
+                window.location.href = "/exam/toList";
+            }
+        });
+    }
+
+    //完成考试修改
+    function doEdit(){
+        if(!valid()){
+            return;
+        }
+
+        $.ajax({
+            url : "home/exam/doEdit",
+            data : $editForm.serialize(),
+            success : function(obj) {
+                if (!obj.succ) {
+                    BootstrapDialog.show({
+                        title : "提示消息",
+                        message : obj.msg,
+                        buttons : [{
+                            label : "&nbsp;确定",
+                            icon : "glyphicon glyphicon-ok",
+                            cssClass : "btn-primary",
+                            action : function(dialogItself) {
+                                dialogItself.close();
+                            }
+                        }]
+                    });
+                    return;
+                }
+
+                window.location.href = "home/exam/toList";
+            }
+        });
+    }
+
+    //到达试卷列表页面
+    function toPaperAdd(){
+        BootstrapDialog.show({
+            title : "添加试卷",
+            cssClass : "exam-list",
+            message : function(dialog) {
+                var $message = $("<div></div>");
+                var pageToLoad = dialog.getData("pageToLoad");
+                $message.load(pageToLoad);
+                return $message;
+            },
+            data : {
+                "pageToLoad" : "/exam/toPaperAdd"
+            },
+            buttons : [{
+                label : "&nbsp;确定",
+                icon : "glyphicon glyphicon-ok",
+                cssClass : "btn-primary",
+                action : function(dialogItself) {
+                    var nodes = $("#paperTable").bootstrapTable("getSelections");
+                    if(nodes.length != 1){
+                        BootstrapDialog.show({
+                            title : "提示消息",
+                            message : "请选择一行数据！",
+                            buttons : [{
+                                label : "&nbsp;确定",
+                                icon : "glyphicon glyphicon-ok",
+                                cssClass : "btn-primary",
+                                action : function(dialogItself) {
+                                    dialogItself.close();
+                                }
+                            }]
+                        });
+                        return;
+                    }
+
+                    $paperId.val(nodes[0].ID);
+                    $paperName.val(nodes[0].NAME).change();
+                    dialogItself.close();
+                }
+            }, {
+                label : "&nbsp;取消",
+                icon : "glyphicon glyphicon-remove",
+                cssClass : "btn-primary",
+                action : function(dialogItself) {
+                    dialogItself.close();
+                }
+            }],
+            onshown : function(){
+                var $paperTable = $("#paperTable");
+                var $paperQueryForm = $("#paperQueryForm");
+
+                $paperTable.bootstrapTable({
+                    url : "/paper/list",
+                    queryParams : function(params){
+                        var customeParams = $.fn.my.serializeObj($paperQueryForm);
+                        customeParams.page = this.pageNumber;
+                        customeParams.rows = this.pageSize;
+                        return customeParams;
+                    },
+                    columns : [
+                        {field : "state", checkbox : true},
+                        {field : "NAME", title : "名称", width : 120, align : "center"},
+                        {field : "TOTLE_SCORE", title : "总分数", width : 40, align : "center"},
+                        {field : "PAPER_TYPE_NAME", title : "试卷分类", width : 50, align : "center"},
+                        {field : "STATE_NAME", title : "状态", width : 80, align : "center"}
+                    ]
+                });
+            }
+        });
+    }
+
+    //试卷查询
+    function paperQuery(){
+        $("#paperTable").bootstrapTable('refresh', {pageNumber : 1});
+    }
+
+    //试卷重置
+    function paperReset(){
+        $("#paperQueryForm")[0].reset();
+        paperQuery();
+    }
+</script>
+</html>

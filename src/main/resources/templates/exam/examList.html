@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>考试列表</title>
+    <div th:include="~{common/commonSource::#source}"></div>
+    <link href="/css/exam.css" rel="stylesheet">
+</head>
+<body>
+<div th:include="~{common/head::#head}"></div>
+<div class="container">
+    <br><br><br>
+    <div class="row">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-11">
+            <div class="panel panel-default exam-query">
+                <div class="panel-body">
+                    <form id="queryForm" class="form-horizontal" role="form">
+                        <input type="hidden" id="one" name="one"/>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="two" class="control-label col-md-4">名称：</label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="two" name="two" class="form-control" placeholder="请输入考试名称">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="six" class="control-label col-md-4">分类:</label>
+                                    <div class="col-md-8">
+                                        <select id="six" name="six" class="form-control">
+                                            <option value="">选择考试分类</option>
+                                            <option th:each="catalog:${catalogList}"
+                                                    th:value="${catalog.id}">
+                                                [[${catalog.catalogName}]]
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="seven" class="control-label col-md-4">状态:</label>
+                                    <div class="col-md-8">
+                                        <select id="seven" name="seven" class="form-control">
+                                            <option value="">选择考试状态</option>
+                                            <option value="0">未发布</option>
+                                            <option value="1">进行中</option>
+                                            <option value="2">已结束</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3" style="text-align: right;">
+                                <button type="button" class="btn btn-primary" onclick="reset();">
+                                    <span class="glyphicon glyphicon-repeat"></span>
+                                    &nbsp;重置
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="query();">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                    &nbsp;查询
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="panel panel-default exam-list">
+                <div class="panel-body">
+                    <div id="toolbar">
+                        <button type="button" class="btn btn-primary" onclick="toAdd();">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            &nbsp;添加
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="toEdit();">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            &nbsp;修改
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="doDel();">
+                            <span class="glyphicon glyphicon-trash"></span>
+                            &nbsp;删除
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="doPublish();">
+                            <span class="glyphicon glyphicon-ok"></span>
+                            &nbsp;发布考试
+                        </button>
+                    </div>
+                    <table id="table"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    //定义变量
+    var $table = $("#table");
+    var $queryForm = $("#queryForm");
+    var $one = $("#one");
+
+    //页面加载完毕，执行如下方法：
+    $(function() {
+        initTable();
+    });
+
+    //初始化列表
+    function initTable(){
+        $table.bootstrapTable({
+            url : "/exam/list",
+            queryParams : function(params){
+                var customeParams = $.fn.my.serializeObj($queryForm);
+                customeParams.page = this.pageNumber;
+                customeParams.rows = this.pageSize;
+                return customeParams;
+            },
+            columns : [
+                {field : "state", checkbox : true},
+                {field : "NAME", title : "名称", width : 160, align : "center"},
+                {field : "PAPER_NAME", title : "试卷", width : 160, align : "center"},
+                {field : "PASS_SCORE", title : "及格分数", width : 80, align : "center",
+                    formatter : function(value, row, index){
+                        return row.PASS_SCORE + "/" + row.PAPER_TOTLE_SCORE;
+                    }
+                },
+                {field : "START_TIME_STR", title : "考试时间", width : 160, align : "center",
+                    formatter : function(value, row, index){
+                        return row.START_TIME_STR + "<br/>" + row.END_TIME_STR;
+                    }
+                },
+                {field : "STATE_NAME", title : "状态", width : 80, align : "center"}
+            ],
+            toolbar : "#toolbar"
+        });
+    }
+
+    //查询
+    function query(){
+        $table.bootstrapTable('refresh', {pageNumber : 1});
+    }
+
+    //重置
+    function reset(){
+        $queryForm[0].reset();
+        query();
+    }
+
+    //到达添加考试页面
+    function toAdd(){
+        window.location.href = "/exam/toAdd";
+    }
+
+    //到达修改考试页面
+    function toEdit(){
+        var nodes = $table.bootstrapTable("getSelections");
+        if(nodes.length != 1){
+            BootstrapDialog.show({
+                title : "提示消息",
+                message : "请选择一行数据！",
+                buttons : [{
+                    label : "&nbsp;确定",
+                    icon : "glyphicon glyphicon-ok",
+                    cssClass : "btn-primary",
+                    action : function(dialogItself) {
+                        dialogItself.close();
+                    }
+                }]
+            });
+            return;
+        }
+
+        if(nodes[0].STATE == 1){
+            BootstrapDialog.show({
+                title : "提示消息",
+                message : "考试已发布！",
+                buttons : [{
+                    label : "&nbsp;确定",
+                    icon : "glyphicon glyphicon-ok",
+                    cssClass : "btn-primary",
+                    action : function(dialogItself) {
+                        dialogItself.close();
+                    }
+                }]
+            });
+            return;
+        }
+
+        window.location.href = "home/exam/toEdit?id=" + nodes[0].ID;
+    }
+
+    //完成考试删除
+    function doDel(){
+        var nodes = $table.bootstrapTable("getSelections");
+        if(nodes.length == 0){
+            BootstrapDialog.show({
+                title : "提示消息",
+                message : "请选择一行或多行数据！",
+                buttons : [{
+                    label : "&nbsp;确定",
+                    icon : "glyphicon glyphicon-ok",
+                    cssClass : "btn-primary",
+                    action : function(dialogItself) {
+                        dialogItself.close();
+                    }
+                }]
+            });
+            return;
+        }
+
+        BootstrapDialog.show({
+            title : "提示消息",
+            message : "确定删除？",
+            buttons : [{
+                label : "&nbsp;确定",
+                icon : "glyphicon glyphicon-ok",
+                cssClass : "btn-primary",
+                action : function(dialogItself) {
+                    $.ajax({
+                        url : "home/exam/doDel",
+                        data : $.fn.my.serializeField(nodes),
+                        success : function(obj) {
+                            if (!obj.succ) {
+                                BootstrapDialog.show({
+                                    title : "提示消息",
+                                    message : obj.msg,
+                                    buttons : [{
+                                        label : "&nbsp;确定",
+                                        icon : "glyphicon glyphicon-ok",
+                                        cssClass : "btn-primary",
+                                        action : function(dialogItself) {
+                                            dialogItself.close();
+                                        }
+                                    }]
+                                });
+                                return;
+                            }
+
+                            window.location.href = "home/exam/toList";
+                        }
+                    });
+                }
+            }, {
+                label : "&nbsp;取消",
+                icon : "glyphicon glyphicon-remove",
+                cssClass : "btn-primary",
+                action : function(dialogItself) {
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+
+    //完成考试发布
+    function doPublish(){
+        var nodes = $table.bootstrapTable("getSelections");
+        if(nodes.length != 1){
+            BootstrapDialog.show({
+                title : "提示消息",
+                message : "请选择一行数据！",
+                buttons : [{
+                    label : "&nbsp;确定",
+                    icon : "glyphicon glyphicon-ok",
+                    cssClass : "btn-primary",
+                    action : function(dialogItself) {
+                        dialogItself.close();
+                    }
+                }]
+            });
+            return;
+        }
+
+        if(nodes[0].STATE == 1){
+            BootstrapDialog.show({
+                title : "提示消息",
+                message : "考试已发布！",
+                buttons : [{
+                    label : "&nbsp;确定",
+                    icon : "glyphicon glyphicon-ok",
+                    cssClass : "btn-primary",
+                    action : function(dialogItself) {
+                        dialogItself.close();
+                    }
+                }]
+            });
+            return;
+        }
+
+        BootstrapDialog.show({
+            title : "提示消息",
+            message : "确定发布？",
+            buttons : [{
+                label : "&nbsp;确定",
+                icon : "glyphicon glyphicon-ok",
+                cssClass : "btn-primary",
+                action : function(dialogItself) {
+                    $.ajax({
+                        url : "/exam/doPublish",
+                        data : {
+                            id : nodes[0].ID
+                        },
+                        success : function(obj) {
+                            if (!obj.succ) {
+                                BootstrapDialog.show({
+                                    title : "提示消息",
+                                    message : obj.msg,
+                                    buttons : [{
+                                        label : "&nbsp;确定",
+                                        icon : "glyphicon glyphicon-ok",
+                                        cssClass : "btn-primary",
+                                        action : function(dialogItself) {
+                                            dialogItself.close();
+                                        }
+                                    }]
+                                });
+                                return;
+                            }
+
+                            window.location.href = "/exam/toList";
+                        }
+                    });
+                }
+            }, {
+                label : "&nbsp;取消",
+                icon : "glyphicon glyphicon-remove",
+                cssClass : "btn-primary",
+                action : function(dialogItself) {
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+</script>
+<style>
+  .table>tbody>tr>td{
+  vertical-align: middle;
+}
+</style>
+</html>

@@ -1,0 +1,64 @@
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default exam-query">
+                <div class="panel-body">
+                    <form id="paperQueryForm" class="form-horizontal" role="form">
+                        <input type="hidden" id="paperOne" name="one"/>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="two" class="control-label col-md-4">名称：</label>
+                                    <div class="col-md-8">
+                                        <input type="text" id="two" name="two" class="form-control" placeholder="请输入名称">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="six" class="control-label col-md-4">分类:</label>
+                                    <div class="col-md-8">
+                                        <select id="six" name="six" class="form-control">
+                                            <option value="">--选择试卷分类--</option>
+                                            <option value="2">安规</option>
+                                            <option value="3">运规</option>
+                                            <option value="4">三种人</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="four" class="control-label col-md-4">状态:</label>
+                                    <div class="col-md-8">
+                                        <select id="four" name="four" class="form-control">
+                                            <option value="">--选择试卷状态--</option>
+                                            <option value="1">已配置</option>
+                                            <option value="0">尚未配置</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3" style="text-align: right;">
+                                <button type="button" class="btn btn-primary" onclick="paperReset();">
+                                    <span class="glyphicon glyphicon-repeat"></span>
+                                    &nbsp;重置
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="paperQuery();">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                    &nbsp;查询
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="panel panel-default exam-list">
+                <div class="panel-body">
+                    <table id="paperTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

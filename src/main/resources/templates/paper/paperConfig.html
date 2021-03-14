@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>配置试卷</title>
+    <div th:include="~{common/commonSource::#source}"></div>
+    <script src="/script/validation/jquery.validate.min.js" type="text/javascript"></script>
+    <script src="/script/validation/messages_zh.js" type="text/javascript"></script>
+    <link href="/css/paper.css" rel="stylesheet">
+</head>
+<body>
+<div th:include="~{common/head::#head}"></div>
+<div class="container paper">
+    <div class="row">
+        <br><br><br>
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <input type="hidden" id="id" name="id" value="${paper.id }">
+                        <h1 th:text="${paper.name}"></h1>
+                        <h5 th:text="${paper.description}"></h5>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="bs-example" data-example-id="contextual-panels">
+
+                <div th:if="${paperConfig.radioCount > 0}">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">单项选择题</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-4" th:text="${'共' + paperConfig.radioCount +'道题，每小题'+paperConfig.radioScore+'分'}">
+                                </div>
+                                <div class="col-md-4" th:text="${'小计：' + paperConfig.radioScore * paperConfig.radioCount +'分'}">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-primary glyphicon glyphicon-pencil btn-xs" th:onclick="editQuestionType([[${paper.id}]],2)"/>
+                                    <button type="button" class="btn btn-danger glyphicon glyphicon-trash btn-xs" onclick="delQuestiontType()"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${paperConfig.checkedCount > 0}">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">多项选择题</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-4" th:text="${'共' + paperConfig.checkedCount +'道题，每小题'+paperConfig.checkedScore+'分'}">
+                                </div>
+                                <div class="col-md-4" th:text="${'小计：' + paperConfig.checkedScore * paperConfig.checkedCount +'分'}">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-primary glyphicon glyphicon-pencil btn-xs"/>
+                                    <button type="button" class="btn btn-danger glyphicon glyphicon-trash btn-xs"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${paperConfig.judgeCount > 0}">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">判断题</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-4" th:text="${'共' + paperConfig.judgeCount +'道题，每小题'+paperConfig.judgeScore+'分'}">
+                                </div>
+                                <div class="col-md-4" th:text="${'小计：' + paperConfig.judgeScore * paperConfig.judgeCount +'分'}">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-primary glyphicon glyphicon-pencil btn-xs"/>
+                                    <button type="button" class="btn btn-danger glyphicon glyphicon-trash btn-xs"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${paperConfig.scannerCount > 0}">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">填空题</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-4" th:text="${'共' + paperConfig.scannerCount +'道题，每小题'+paperConfig.scannerScore+'分'}">
+                                </div>
+                                <div class="col-md-4" th:text="${'小计：' + paperConfig.scannerScore * paperConfig.scannerCount +'分'}">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-primary glyphicon glyphicon-pencil btn-xs"/>
+                                    <button type="button" class="btn btn-danger glyphicon glyphicon-trash btn-xs"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${paperConfig.qAnswerCount > 0}">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">问答题</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-4" th:text="${'共' + paperConfig.qAnswerCount +'道题，每小题'+paperConfig.qAnswerScore+'分'}">
+                                </div>
+                                <div class="col-md-4" th:text="${'小计：' + paperConfig.qAnswerScore * paperConfig.qAnswerCount +'分'}">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-primary glyphicon glyphicon-pencil btn-xs"/>
+                                    <button type="button" class="btn btn-danger glyphicon glyphicon-trash btn-xs"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-8">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">
+                <span class="glyphicon glyphicon-plus"></span>
+                添加题型
+            </button>
+            <button type="button" class="btn btn-primary" onclick="window.location.href='/paper/toList'">
+                <span class="glyphicon glyphicon-arrow-left"></span>
+                &nbsp;返回
+            </button>
+        </div>
+    </div>
+    <div class="row" >
+        <div class="col-md-8">
+            <br>
+            <div class="answer-card-title ">
+                <h1 class="glyphicon glyphicon-floppy-saved" style="height: 45px" th:text="${'试卷总分：' + paperConfig.totleScore + '分'}"> 试卷总分 0.00</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 添加题型模态框 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">添加题型</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="questionTypeForm" role="form">
+                    <div class="form-group">
+                        <label for="questionType" class="col-sm-4 control-label">试题类型:</label>
+                        <div class="col-sm-4">
+                            <select class="form-control"
+                                    id="questionType"
+                                    name="questionType"
+                                    onchange="selectType(this.value)">
+                                <option value=""> ---试题类型---</option>
+                                <option value="2">单项选择题</option>
+                                <option value="3">多项选择题</option>
+                                <option value="4">判断题</option>
+                                <option value="5">填空题</option>
+                                <option value="6">问答题</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="questionCount" class="col-sm-4 control-label">题型数量:</label>
+                        <div class="col-sm-5">
+                            <table>
+                                <tr>
+                                    <td width="175px" height="28px">
+                                        <input type="text" class="form-control" id="questionCount" name="questionCount" placeholder="20个">
+                                    </td>
+                                    <td>个</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="questionScore" class="col-sm-4 control-label">单项分数:</label>
+                        <div class="col-sm-5">
+                            <table>
+                                <tr>
+                                    <td width="175px" height="28px"><input type="text" class="form-control" id="questionScore" name="questionScore" placeholder="1.0"></td>
+                                    <td>分</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <input type="hidden" name="paperId" th:value="${paper.id}">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <input type="submit" class="btn btn-primary" id="addQuestionType" value="添加"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+    // 清除模态框添加的数据
+    $('#exampleModal').on('hidden.bs.modal', function (e) {
+        $("#questionType").val("");
+        $("#questionCount").val("");
+        $("#questionScore").val("");
+    });
+
+    // 模态框显示后改变试题类型选项回显最大可选试题数量
+    function selectType(value){
+        $("#questionCount").prop("value","");
+        switch (value) {
+            case "2":
+                $("#questionCount").prop("placeholder","当前题型最大可选"+[[${paperQuestionVo.radioCount}]]+"个");
+                break;
+            case "3":
+                $("#questionCount").prop("placeholder","当前题型最大可选"+[[${paperQuestionVo.checkboxCount}]]+"个");
+                break;
+            case "4":
+                $("#questionCount").prop("placeholder","当前题型最大可选"+[[${paperQuestionVo.judgeCount}]]+"个");
+                break;
+            case "5":
+                $("#questionCount").prop("placeholder","当前题型最大可选"+[[${paperQuestionVo.scannerCount}]]+"个");
+                break;
+            case "6":
+                $("#questionCount").prop("placeholder","当前题型最大可选"+[[${paperQuestionVo.qAnswerCount}]]+"个");
+                break;
+        }
+
+    }
+
+    // 添加题型表单验证
+    $.validator.setDefaults({
+        submitHandler: function () {
+            $.ajax({
+                url:"/paper/addQuestionType",  // 请求url
+                type:"post",    // 请求方式
+                data : $("#questionTypeForm").serialize(),  // 请求参数(JSON格式)
+                success:function(responseSource){
+                    if (!responseSource.succ) {
+                        BootstrapDialog.show({
+                            title : "提示消息",
+                            message : responseSource.msg,
+                            closable: true,  // 消息框可关闭
+                            buttons : [{
+                                label : "&nbsp;确定",
+                                icon : "glyphicon glyphicon-ok",
+                                cssClass : "btn-primary",
+                                action: function(dialogRef){
+                                    // 传入消息框然后关闭
+                                    dialogRef.close();
+                                }
+                            }]
+                        });
+                        return;
+                    }else {
+                        $('#exampleModal').modal('hide');
+                        // alert("添加成功,刷新页面数据");
+                        window.location.reload();
+                    }
+                },
+                dataType:"json"  // 预期服务器返回的数据类型，可以不设置
+        });
+        }
+    });
+    $().ready(function() {
+        $("#questionTypeForm").validate({
+            rules: {
+                questionType: "required",
+                questionCount: {
+                    required: true,
+                    digits: true,
+                    min: 1
+                },
+                questionScore: {
+                    required: true,
+                    number: true,
+                    min: 0.1
+                }
+            },
+            messages: {
+                questionType: "选择试题类型",
+                questionCount: {
+                    required: "试题数量不能为空",
+                    digits: "请填写整数",
+                    min: "试题数量不能为0"
+                },
+                questionScore: {
+                    required: "试题分数不能为空",
+                    number: "请填写正确的格式",
+                    min: "试题分数不能为0"
+                }
+            }
+        });
+    });
+
+    // 修改试题类型
+    function editQuestionType(paperId,typeId){
+        alert("修改试卷id："+paperId+"，修改试题类型："+typeId);
+    }
+
+    // 删除试题类型
+    function delQuestiontType(paperId,typeId){
+
+    }
+
+
+</script>
+<style>
+    .error{
+        color:red;
+    }
+</style>
+
+
+
+</html>
