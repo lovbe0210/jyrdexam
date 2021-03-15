@@ -5,4 +5,4 @@
 
 软件架构：SpringBoot+Mybatis-Plus+Quartz+FastDFS+Vue+Vant+Axios+jQuery+Bootstrap+Ajax
 
-测试地址：http://admin.lvyi.club
+演示地址：http://admin.lvyi.club
