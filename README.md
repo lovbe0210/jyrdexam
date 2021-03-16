@@ -15,5 +15,5 @@
 * [FastDFS](https://github.com/happyfish100/fastdfs)
 * [Quartz](https://github.com/quartz-scheduler/quartz)
 * [AutoGenerator自动代码构建](https://mp.baomidou.com/config/generator-config.html)
-* [多线程]
-* [阿里云SMS]
+* 多线程
+* 阿里云SMS
