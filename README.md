@@ -54,18 +54,29 @@
 
 2. nginx安装
 * nginx.conf配置
-#### \#fastDFS
+```java
+\#前端项目根路径
+    location / {
+        root   jyrdexam; // 该路径为nginx安装目录下的项目路径
+        try_files $uri $uri/ @router;
+        index  index.html index.htm;
+    }
+\#解决vue刷新页面404
+    location @router {
+        rewrite ^.*$ /index.html last;
+    }
+\#fastDFS
     location /group1/M00/ {
          ngx_fastdfs_module;
     }
-#### \#后端接口转发
+\#后端接口转发
      location /ucenter/ {
         proxy_pass   http://exam-admin;
     }
     location /exam/ {
         proxy_pass   http://exam-admin;
     }
-
+```
 
 
 ## License
