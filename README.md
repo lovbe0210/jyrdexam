@@ -5,7 +5,7 @@
 
 # 软件架构：SpringBoot+Mybatis-Plus+jQuery+Bootstrap+Ajax
 
-演示地址：http://admin.lvyi.club         员工答题[前端](https://github.com/lovbe0210/jyrdexamFont)演示地址：http://exam.lvyi.club
+演示地址：http://admin.lvyi.club  &nbsp;员工答题[前端](https://github.com/lovbe0210/jyrdexamFont)演示地址：http://exam.lvyi.club
 
 ## 技术栈
 
@@ -40,13 +40,19 @@
 |-resources
     |-static  //页面静态文件
     |-templates  //模板视图文件
+    |-SQL  //SQL语句
     application.yml //核心配置文件
     logback-spring.xml //日志配置文件
     tracker.conf  //fastDFS配置文件
 ```
 
 ## 项目部署
-    
+1. FastDFS安装
+* 先安装tracker服务
+* 然后安装storage服务
+* 最后安装fastdfs-nginx-module
+
+2. nginx安装
 
 ## License
 
