@@ -55,6 +55,10 @@
 2. nginx安装
 * nginx.conf配置
 ```java
+\#后端代理地址
+    upstream exam-admin {
+      server xx.xx.xx.xx:xxxx;
+    }
 \#前端项目根路径
     location / {
         root   jyrdexam; // 该路径为nginx安装目录下的项目路径
