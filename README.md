@@ -53,6 +53,11 @@
 * 最后安装fastdfs-nginx-module
 
 2. nginx安装
+* nginx.conf配置
+        \#fastDFS
+        location /group1/M00/ {
+             ngx_fastdfs_module;
+        }
 
 ## License
 
