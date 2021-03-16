@@ -77,7 +77,9 @@
         proxy_pass   http://exam-admin;
     }
 ```
-
+3. 项目运行
+* 后台运行：nohup java -jar xxx.jar > logPath &
+* 日志查看：tail -f log
 
 ## License
 
