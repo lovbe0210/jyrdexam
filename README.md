@@ -17,6 +17,7 @@
 * [AutoGenerator自动代码构建](https://mp.baomidou.com/config/generator-config.html)
 * 多线程
 * 阿里云SMS
+* log4j日志
 
 2. UI 技术栈
 * 模板引擎Thyemleaf
@@ -28,15 +29,24 @@
 ```java
 |-com.jyrd.exam
     |-base
-     |-common //公共模块
-     |-config //配置文件
-     |-entity //数据库实体类
-     |-mapper //mapper接口以及xml
-     |-vo //参数传递实体
+      |-common //公共模块
+      |-config //配置文件
+      |-entity //数据库实体类
+      |-mapper //mapper接口以及xml
+      |-vo //参数传递实体
     |-admin  //管理员api
     |-home   //入口api
     |-exam   //考试相关api 
+|-resources
+    |-static  //页面静态文件
+    |-templates  //模板视图文件
+    application.yml //核心配置文件
+    logback-spring.xml //日志配置文件
+    tracker.conf  //fastDFS配置文件
 ```
+
+## 项目部署
+    
 
 ## License
 
