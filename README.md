@@ -54,10 +54,19 @@
 
 2. nginx安装
 * nginx.conf配置
-        \#fastDFS
-        location /group1/M00/ {
-             ngx_fastdfs_module;
-        }
+* \#fastDFS
+    location /group1/M00/ {
+         ngx_fastdfs_module;
+    }
+* \#后端接口转发
+     location /ucenter/ {
+        proxy_pass   http://exam-admin;
+    }
+    location /exam/ {
+        proxy_pass   http://exam-admin;
+    }
+
+
 
 ## License
 
