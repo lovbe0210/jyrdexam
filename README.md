@@ -54,11 +54,11 @@
 
 2. nginx安装
 * nginx.conf配置
-** \#fastDFS
+#### \#fastDFS
     location /group1/M00/ {
          ngx_fastdfs_module;
     }
-** \#后端接口转发
+#### \#后端接口转发
      location /ucenter/ {
         proxy_pass   http://exam-admin;
     }
